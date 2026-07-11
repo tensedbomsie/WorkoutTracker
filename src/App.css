@@ -576,3 +576,154 @@ input, select, textarea {
   width: 60px;
   text-align: center;
 }
+
+.workout-notes-input {
+  width: 100%;
+  min-height: 60px;
+  margin-bottom: 1rem;
+  padding: 0.6rem 0.8rem;
+  resize: vertical;
+}
+
+/* ---------- Filter bar ---------- */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filter-bar select {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.82rem;
+}
+
+.filter-toggle {
+  font-size: 0.82rem;
+}
+
+.filter-toggle.active {
+  background: rgba(52, 211, 153, 0.18);
+  border-color: rgba(52, 211, 153, 0.45);
+  color: var(--accent);
+}
+
+/* ---------- Muscle volume bars ---------- */
+.volume-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.volume-bar-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 70px;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.volume-bar-label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.volume-bar-track {
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.volume-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.volume-bar-count {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* ---------- Calendar ---------- */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.calendar-month-label {
+  font-weight: 600;
+  min-width: 140px;
+  text-align: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+}
+
+.calendar-weekday {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  padding-bottom: 0.4rem;
+}
+
+.calendar-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.calendar-cell.empty {
+  visibility: hidden;
+}
+
+.calendar-cell.has-workout {
+  cursor: pointer;
+  background: rgba(52, 211, 153, 0.1);
+  color: var(--text);
+}
+
+.calendar-cell.has-workout:hover {
+  background: rgba(52, 211, 153, 0.2);
+}
+
+.calendar-cell.today {
+  border: 1px solid var(--accent);
+}
+
+.calendar-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.calendar-notes {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 0.8rem;
+}
+
+.calendar-exercise-block {
+  margin-bottom: 0.8rem;
+}
+
+.calendar-exercise-block .exercise-name {
+  display: block;
+  margin-bottom: 0.3rem;
+}

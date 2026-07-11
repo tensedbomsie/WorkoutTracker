@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
   DndContext,
@@ -82,6 +82,16 @@ export default function WorkoutLog({ session }: { session: Session }) {
     await supabase.from('workouts').update({ name }).eq('id', workout.id)
   }
 
+  const notesTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const updateNotes = (notes: string) => {
+    if (!workout) return
+    setWorkout({ ...workout, notes })
+    if (notesTimeout.current) clearTimeout(notesTimeout.current)
+    notesTimeout.current = setTimeout(async () => {
+      await supabase.from('workouts').update({ notes }).eq('id', workout.id)
+    }, 600)
+  }
+
   const addExercise = async (exercise: Exercise) => {
     if (!workout) return
     const { data } = await supabase
@@ -163,6 +173,13 @@ export default function WorkoutLog({ session }: { session: Session }) {
           placeholder="ชื่อ Workout เช่น Upper A"
         />
       </div>
+
+      <textarea
+        className="workout-notes-input"
+        placeholder="📝 บันทึกความรู้สึกวันนี้..."
+        value={workout?.notes ?? ''}
+        onChange={(e) => updateNotes(e.target.value)}
+      />
 
       <div className="exercise-search">
         <input

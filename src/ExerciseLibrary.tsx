@@ -25,6 +25,12 @@ export default function ExerciseLibrary({ session }: { session: Session }) {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState(emptyNewExercise())
   const [historyFor, setHistoryFor] = useState<Exercise | null>(null)
+  const [muscleGroupFilter, setMuscleGroupFilter] = useState('')
+  const [equipmentFilter, setEquipmentFilter] = useState('')
+  const [difficultyFilter, setDifficultyFilter] = useState('')
+  const [subcategoryFilter, setSubcategoryFilter] = useState('')
+  const [stretchOnly, setStretchOnly] = useState(false)
+  const [favoritesOnly, setFavoritesOnly] = useState(false)
 
   const load = async () => {
     setLoading(true)
@@ -66,9 +72,23 @@ export default function ExerciseLibrary({ session }: { session: Session }) {
     load()
   }
 
-  const filtered = exercises.filter((e) =>
-    e.name.toLowerCase().includes(search.toLowerCase()),
-  )
+  const unique = (values: (string | null)[]) =>
+    [...new Set(values.filter((v): v is string => !!v))].sort()
+  const muscleGroups = unique(exercises.map((e) => e.muscle_group))
+  const equipmentOptions = unique(exercises.map((e) => e.equipment))
+  const difficultyOptions = unique(exercises.map((e) => e.difficulty))
+  const subcategoryOptions = unique(exercises.map((e) => e.subcategory))
+
+  const filtered = exercises.filter((e) => {
+    if (!e.name.toLowerCase().includes(search.toLowerCase())) return false
+    if (muscleGroupFilter && e.muscle_group !== muscleGroupFilter) return false
+    if (equipmentFilter && e.equipment !== equipmentFilter) return false
+    if (difficultyFilter && e.difficulty !== difficultyFilter) return false
+    if (subcategoryFilter && e.subcategory !== subcategoryFilter) return false
+    if (stretchOnly && !e.stretch_focus) return false
+    if (favoritesOnly && !e.is_favorite) return false
+    return true
+  })
   const groups = CATEGORIES.map((cat) => ({
     category: cat,
     items: filtered.filter((e) => e.category === cat),
@@ -163,6 +183,53 @@ export default function ExerciseLibrary({ session }: { session: Session }) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
+
+      <div className="filter-bar">
+        <select value={muscleGroupFilter} onChange={(e) => setMuscleGroupFilter(e.target.value)}>
+          <option value="">Muscle Group ทั้งหมด</option>
+          {muscleGroups.map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+        <select value={equipmentFilter} onChange={(e) => setEquipmentFilter(e.target.value)}>
+          <option value="">Equipment ทั้งหมด</option>
+          {equipmentOptions.map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+        <select value={subcategoryFilter} onChange={(e) => setSubcategoryFilter(e.target.value)}>
+          <option value="">Subcategory ทั้งหมด</option>
+          {subcategoryOptions.map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+        <select value={difficultyFilter} onChange={(e) => setDifficultyFilter(e.target.value)}>
+          <option value="">Difficulty ทั้งหมด</option>
+          {difficultyOptions.map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+        <button
+          className={`btn filter-toggle${stretchOnly ? ' active' : ''}`}
+          onClick={() => setStretchOnly((s) => !s)}
+        >
+          Stretch Focus
+        </button>
+        <button
+          className={`btn filter-toggle${favoritesOnly ? ' active' : ''}`}
+          onClick={() => setFavoritesOnly((s) => !s)}
+        >
+          ⭐ Favorite
+        </button>
+      </div>
 
       {loading && <p className="empty-state">กำลังโหลด...</p>}
 

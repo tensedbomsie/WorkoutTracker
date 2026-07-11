@@ -5,9 +5,11 @@ import Login from './Login'
 import Dashboard from './Dashboard'
 import WorkoutLog from './WorkoutLog'
 import ExerciseLibrary from './ExerciseLibrary'
+import MuscleVolume from './MuscleVolume'
+import CalendarView from './Calendar'
 import './App.css'
 
-type Tab = 'dashboard' | 'log' | 'exercises'
+type Tab = 'dashboard' | 'log' | 'exercises' | 'volume' | 'calendar'
 
 function App() {
   const [session, setSession] = useState<Session | null>(null)
@@ -42,6 +44,12 @@ function App() {
           <button className={tab === 'exercises' ? 'active' : ''} onClick={() => setTab('exercises')}>
             Exercises
           </button>
+          <button className={tab === 'volume' ? 'active' : ''} onClick={() => setTab('volume')}>
+            Volume
+          </button>
+          <button className={tab === 'calendar' ? 'active' : ''} onClick={() => setTab('calendar')}>
+            Calendar
+          </button>
         </div>
         <span className="spacer" />
         <span className="user-email">{session.user.email}</span>
@@ -51,6 +59,8 @@ function App() {
         {tab === 'dashboard' && <Dashboard session={session} onGoLog={() => setTab('log')} />}
         {tab === 'log' && <WorkoutLog session={session} />}
         {tab === 'exercises' && <ExerciseLibrary session={session} />}
+        {tab === 'volume' && <MuscleVolume session={session} />}
+        {tab === 'calendar' && <CalendarView session={session} />}
       </main>
     </div>
   )
