@@ -43,8 +43,33 @@ export type Workout = {
   name: string
   performed_at: string
   notes: string | null
+  duration_minutes: number | null
   created_at: string
   workout_exercises?: WorkoutExercise[]
+}
+
+export type PhotoAngle = 'Front' | 'Side' | 'Back'
+
+export type ProgressPhoto = {
+  id: string
+  owner: string
+  taken_at: string
+  angle: PhotoAngle
+  image_url: string
+  created_at: string
+}
+
+export type BodyMeasurement = {
+  id: string
+  owner: string
+  measured_at: string
+  weight: number | null
+  body_fat: number | null
+  waist: number | null
+  chest: number | null
+  arm: number | null
+  thigh: number | null
+  created_at: string
 }
 
 export const CATEGORIES = [

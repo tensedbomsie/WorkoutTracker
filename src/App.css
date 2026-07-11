@@ -27,6 +27,46 @@ button {
   font-family: inherit;
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.28s ease both;
+}
+
+.stat-tile,
+.exercise-card,
+.pr-card,
+.photo-card {
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.stat-tile:hover,
+.pr-card:hover {
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in,
+  .stat-tile,
+  .exercise-card,
+  .pr-card,
+  .photo-card,
+  .btn,
+  .btn-primary {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 .glass {
   background: var(--glass);
   border: 1px solid var(--glass-border);
@@ -118,6 +158,7 @@ button {
 
 .nav-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.4rem;
 }
 
@@ -725,5 +766,103 @@ input, select, textarea {
 
 .calendar-exercise-block .exercise-name {
   display: block;
+  margin-bottom: 0.3rem;
+}
+
+/* ---------- Duration field ---------- */
+.duration-field {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.duration-field input {
+  width: 70px;
+  text-align: center;
+}
+
+/* ---------- Progress photos ---------- */
+.upload-label {
+  cursor: pointer;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 0.6rem;
+}
+
+.photo-card {
+  padding: 0.5rem;
+}
+
+.photo-card img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.photo-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ---------- Body measurement ---------- */
+.measurement-graph-card {
+  margin-bottom: 1rem;
+}
+
+.measurement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.measurement-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.7rem 0.9rem;
+}
+
+.measurement-date {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  min-width: 80px;
+}
+
+.measurement-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+/* ---------- PR Tracker ---------- */
+.pr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.8rem;
+}
+
+.pr-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.pr-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   margin-bottom: 0.3rem;
 }

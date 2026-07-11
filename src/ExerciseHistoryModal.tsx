@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 import type { Exercise } from './types'
+import Sparkline from './Sparkline'
 
 type HistorySet = {
   reps: number
@@ -52,18 +53,9 @@ export default function ExerciseHistoryModal({
     acc[day] = Math.max(acc[day] ?? 0, s.weight)
     return acc
   }, {})
-  const points = Object.entries(byDay).sort(([a], [b]) => a.localeCompare(b))
-
-  const graphW = 560
-  const graphH = 140
-  const maxWeight = Math.max(...points.map(([, w]) => w), 1)
-  const path = points
-    .map(([, w], i) => {
-      const x = points.length > 1 ? (i / (points.length - 1)) * graphW : graphW / 2
-      const y = graphH - (w / maxWeight) * (graphH - 20) - 10
-      return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`
-    })
-    .join(' ')
+  const points = Object.entries(byDay)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([x, y]) => ({ x, y }))
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -107,21 +99,7 @@ export default function ExerciseHistoryModal({
                   day: 'numeric',
                 })}
             </p>
-            {points.length > 1 && (
-              <svg
-                className="progress-graph"
-                viewBox={`0 0 ${graphW} ${graphH}`}
-                preserveAspectRatio="none"
-              >
-                <path d={path} fill="none" stroke="url(#grad)" strokeWidth="3" />
-                <defs>
-                  <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#34d399" />
-                    <stop offset="100%" stopColor="#6366f1" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            )}
+            <Sparkline points={points} />
           </>
         )}
 

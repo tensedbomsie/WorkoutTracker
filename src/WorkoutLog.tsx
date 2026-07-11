@@ -92,6 +92,12 @@ export default function WorkoutLog({ session }: { session: Session }) {
     }, 600)
   }
 
+  const updateDuration = async (duration_minutes: number | null) => {
+    if (!workout) return
+    setWorkout({ ...workout, duration_minutes })
+    await supabase.from('workouts').update({ duration_minutes }).eq('id', workout.id)
+  }
+
   const addExercise = async (exercise: Exercise) => {
     if (!workout) return
     const { data } = await supabase
@@ -172,6 +178,17 @@ export default function WorkoutLog({ session }: { session: Session }) {
           onChange={(e) => renameWorkout(e.target.value)}
           placeholder="ชื่อ Workout เช่น Upper A"
         />
+        <div className="duration-field">
+          <input
+            type="number"
+            placeholder="นาที"
+            value={workout?.duration_minutes ?? ''}
+            onChange={(e) =>
+              updateDuration(e.target.value === '' ? null : Number(e.target.value))
+            }
+          />
+          <span className="field-label">นาที</span>
+        </div>
       </div>
 
       <textarea

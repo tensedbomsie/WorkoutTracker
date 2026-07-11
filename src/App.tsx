@@ -7,9 +7,34 @@ import WorkoutLog from './WorkoutLog'
 import ExerciseLibrary from './ExerciseLibrary'
 import MuscleVolume from './MuscleVolume'
 import CalendarView from './Calendar'
+import ProgressPhotos from './ProgressPhotos'
+import BodyMeasurementPage from './BodyMeasurement'
+import PRTracker from './PRTracker'
+import Statistics from './Statistics'
 import './App.css'
 
-type Tab = 'dashboard' | 'log' | 'exercises' | 'volume' | 'calendar'
+type Tab =
+  | 'dashboard'
+  | 'log'
+  | 'exercises'
+  | 'volume'
+  | 'calendar'
+  | 'photos'
+  | 'measurements'
+  | 'pr'
+  | 'stats'
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'dashboard', label: 'Dashboard' },
+  { id: 'log', label: 'Log Workout' },
+  { id: 'exercises', label: 'Exercises' },
+  { id: 'volume', label: 'Volume' },
+  { id: 'calendar', label: 'Calendar' },
+  { id: 'photos', label: 'Photos' },
+  { id: 'measurements', label: 'Measurements' },
+  { id: 'pr', label: 'PR Tracker' },
+  { id: 'stats', label: 'Stats' },
+]
 
 function App() {
   const [session, setSession] = useState<Session | null>(null)
@@ -35,32 +60,26 @@ function App() {
       <nav className="top-nav glass">
         <span className="brand">🏋️ Workout Tracker</span>
         <div className="nav-tabs">
-          <button className={tab === 'dashboard' ? 'active' : ''} onClick={() => setTab('dashboard')}>
-            Dashboard
-          </button>
-          <button className={tab === 'log' ? 'active' : ''} onClick={() => setTab('log')}>
-            Log Workout
-          </button>
-          <button className={tab === 'exercises' ? 'active' : ''} onClick={() => setTab('exercises')}>
-            Exercises
-          </button>
-          <button className={tab === 'volume' ? 'active' : ''} onClick={() => setTab('volume')}>
-            Volume
-          </button>
-          <button className={tab === 'calendar' ? 'active' : ''} onClick={() => setTab('calendar')}>
-            Calendar
-          </button>
+          {TABS.map((t) => (
+            <button key={t.id} className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>
+              {t.label}
+            </button>
+          ))}
         </div>
         <span className="spacer" />
         <span className="user-email">{session.user.email}</span>
         <button onClick={() => supabase.auth.signOut()}>ออกจากระบบ</button>
       </nav>
-      <main className="app-main">
+      <main className="app-main fade-in" key={tab}>
         {tab === 'dashboard' && <Dashboard session={session} onGoLog={() => setTab('log')} />}
         {tab === 'log' && <WorkoutLog session={session} />}
         {tab === 'exercises' && <ExerciseLibrary session={session} />}
         {tab === 'volume' && <MuscleVolume session={session} />}
         {tab === 'calendar' && <CalendarView session={session} />}
+        {tab === 'photos' && <ProgressPhotos session={session} />}
+        {tab === 'measurements' && <BodyMeasurementPage session={session} />}
+        {tab === 'pr' && <PRTracker session={session} />}
+        {tab === 'stats' && <Statistics session={session} />}
       </main>
     </div>
   )
