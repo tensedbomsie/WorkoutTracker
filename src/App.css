@@ -523,9 +523,26 @@ input, select, textarea {
 
 .quick-add-row {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: flex-end;
+  gap: 0.7rem;
   flex-wrap: wrap;
+}
+
+.quick-add-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.field-label {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.confirm-set-btn {
+  height: 34px;
 }
 
 .stepper {

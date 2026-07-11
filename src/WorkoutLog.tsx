@@ -260,36 +260,45 @@ function SortableExerciseRow({
       )}
 
       <div className="quick-add-row">
-        <div className="stepper">
-          <button onClick={() => setReps((r) => Math.max(0, r - 1))}>−</button>
+        <div className="quick-add-field">
+          <span className="field-label">Reps</span>
+          <div className="stepper">
+            <button onClick={() => setReps((r) => Math.max(0, r - 1))}>−</button>
+            <input
+              type="number"
+              value={reps}
+              onChange={(e) => setReps(Number(e.target.value))}
+              onKeyDown={(e) => e.key === 'Enter' && confirmSet()}
+            />
+            <button onClick={() => setReps((r) => r + 1)}>+</button>
+          </div>
+        </div>
+        <div className="quick-add-field">
+          <span className="field-label">Weight (kg)</span>
+          <div className="stepper">
+            <button onClick={() => setWeight((w) => Math.max(0, w - 2.5))}>−</button>
+            <input
+              type="number"
+              step="0.5"
+              value={weight}
+              onChange={(e) => setWeight(Number(e.target.value))}
+              onKeyDown={(e) => e.key === 'Enter' && confirmSet()}
+            />
+            <button onClick={() => setWeight((w) => w + 2.5)}>+</button>
+          </div>
+        </div>
+        <div className="quick-add-field">
+          <span className="field-label">RPE</span>
           <input
+            className="rpe-input"
             type="number"
-            value={reps}
-            onChange={(e) => setReps(Number(e.target.value))}
+            placeholder="-"
+            value={rpe}
+            onChange={(e) => setRpe(e.target.value === '' ? '' : Number(e.target.value))}
             onKeyDown={(e) => e.key === 'Enter' && confirmSet()}
           />
-          <button onClick={() => setReps((r) => r + 1)}>+</button>
         </div>
-        <div className="stepper">
-          <button onClick={() => setWeight((w) => Math.max(0, w - 2.5))}>−</button>
-          <input
-            type="number"
-            step="0.5"
-            value={weight}
-            onChange={(e) => setWeight(Number(e.target.value))}
-            onKeyDown={(e) => e.key === 'Enter' && confirmSet()}
-          />
-          <button onClick={() => setWeight((w) => w + 2.5)}>+</button>
-        </div>
-        <input
-          className="rpe-input"
-          type="number"
-          placeholder="RPE"
-          value={rpe}
-          onChange={(e) => setRpe(e.target.value === '' ? '' : Number(e.target.value))}
-          onKeyDown={(e) => e.key === 'Enter' && confirmSet()}
-        />
-        <button className="btn btn-primary" onClick={confirmSet}>
+        <button className="btn btn-primary confirm-set-btn" onClick={confirmSet}>
           + เซ็ต
         </button>
       </div>
