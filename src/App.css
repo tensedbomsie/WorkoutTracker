@@ -1,0 +1,561 @@
+:root {
+  --bg: #0a0b0f;
+  --bg-2: #101218;
+  --glass: rgba(255, 255, 255, 0.045);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --text: #e8e9ee;
+  --text-dim: #8b8d98;
+  --accent: #34d399;
+  --accent-2: #6366f1;
+  --danger: #f87171;
+  --gold: #facc15;
+  --radius: 14px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 0%, rgba(99, 102, 241, 0.12), transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(52, 211, 153, 0.1), transparent 45%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+}
+
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+}
+
+/* ---------- Login ---------- */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 300px;
+  border-radius: var(--radius);
+  padding: 1.6rem;
+}
+
+.login-form h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.login-form input,
+.login-form button {
+  padding: 0.65rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.login-form button {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border: none;
+  color: #06120c;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.login-form button:hover {
+  transform: translateY(-1px);
+}
+
+.login-error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* ---------- Shell ---------- */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 1.2rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.brand {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.nav-tabs button {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.15s ease;
+}
+
+.nav-tabs button:hover {
+  color: var(--text);
+}
+
+.nav-tabs button.active {
+  background: rgba(52, 211, 153, 0.15);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: var(--accent);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.user-email {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+}
+
+.top-nav > button:last-child {
+  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.app-main {
+  flex: 1;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.2rem 1rem 3rem;
+}
+
+/* ---------- Generic buttons/inputs ---------- */
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: transform 0.12s ease, background 0.15s ease;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border: none;
+  color: #06120c;
+  font-weight: 700;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  color: var(--danger);
+}
+
+input, select, textarea {
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+}
+
+/* ---------- Dashboard ---------- */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.stat-tile {
+  padding: 1rem;
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.stat-tile .value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.stat-tile .label {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+}
+
+.section-title {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  margin: 1.4rem 0 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.today-workout-card {
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.muscle-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.muscle-chip {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #a5b4fc;
+  font-size: 0.78rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 2rem 1rem;
+}
+
+.today-exercise-list {
+  margin: 0.4rem 0 0.8rem;
+  padding-left: 1.2rem;
+  color: var(--text-dim);
+}
+
+/* ---------- Page header / shared controls ---------- */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.search-input,
+.workout-name-input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.workout-name-input {
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--glass-border);
+  border-radius: 0;
+  padding-left: 0;
+  margin-bottom: 1.2rem;
+}
+
+/* ---------- Exercise form ---------- */
+.exercise-form {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.5rem;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.checkbox-field input {
+  width: auto;
+}
+
+/* ---------- Exercise grid/cards ---------- */
+.exercise-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 0.6rem;
+}
+
+.exercise-card {
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.15s ease;
+}
+
+.exercise-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.exercise-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.exercise-name {
+  font-weight: 600;
+}
+
+.fav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--gold);
+}
+
+.exercise-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+.chip {
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  color: var(--text-dim);
+  font-size: 0.72rem;
+}
+
+/* ---------- Modal ---------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  width: min(600px, 100%);
+  max-height: 85vh;
+  overflow-y: auto;
+  border-radius: var(--radius);
+  padding: 1.4rem;
+}
+
+.modal h2 {
+  margin: 0 0 0.2rem;
+}
+
+.modal-sub {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin: 0 0 0.8rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.progress-graph {
+  width: 100%;
+  height: 140px;
+  margin-top: 0.6rem;
+}
+
+/* ---------- Workout log ---------- */
+.exercise-search {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.exercise-search input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+}
+
+.exercise-search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.3rem;
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.exercise-search-item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.55rem 0.8rem;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.exercise-search-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.workout-exercise-card {
+  margin-bottom: 0.8rem;
+}
+
+.workout-exercise-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.drag-handle {
+  cursor: grab;
+  color: var(--text-dim);
+  font-size: 1.1rem;
+  touch-action: none;
+}
+
+.set-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.6rem;
+}
+
+.set-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.85rem;
+}
+
+.set-num {
+  color: var(--text-dim);
+  min-width: 28px;
+}
+
+.set-delete {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.quick-add-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+}
+
+.stepper button {
+  background: rgba(255, 255, 255, 0.04);
+  border: none;
+  color: var(--text);
+  width: 30px;
+  height: 34px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.stepper input {
+  width: 52px;
+  text-align: center;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding: 0.4rem 0.2rem;
+}
+
+.rpe-input {
+  width: 60px;
+  text-align: center;
+}
