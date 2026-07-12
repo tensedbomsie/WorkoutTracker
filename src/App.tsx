@@ -58,6 +58,9 @@ function App() {
   return (
     <div className="app-shell">
       <nav className="top-nav glass">
+        <a className="hub-link" href="https://tensedbomsie.github.io/SatoruHUB/" title="กลับไป Satoru HUB">
+          🏠
+        </a>
         <span className="brand">🏋️ Workout Tracker</span>
         <div className="nav-tabs">
           {TABS.map((t) => (
