@@ -6,7 +6,6 @@ import Sparkline from './Sparkline'
 type HistorySet = {
   reps: number
   weight: number
-  rpe: number | null
   performed_at: string
 }
 
@@ -26,14 +25,13 @@ export default function ExerciseHistoryModal({
       const { data } = await supabase
         .from('sets')
         .select(
-          'reps, weight, rpe, workout_exercise:workout_exercises!inner(exercise_id, workout:workouts!inner(performed_at))',
+          'reps, weight, workout_exercise:workout_exercises!inner(exercise_id, workout:workouts!inner(performed_at))',
         )
         .eq('workout_exercise.exercise_id', exercise.id)
 
       const rows: HistorySet[] = ((data as any[]) ?? []).map((row) => ({
         reps: row.reps,
         weight: row.weight,
-        rpe: row.rpe,
         performed_at: row.workout_exercise.workout.performed_at,
       }))
       rows.sort((a, b) => new Date(a.performed_at).getTime() - new Date(b.performed_at).getTime())

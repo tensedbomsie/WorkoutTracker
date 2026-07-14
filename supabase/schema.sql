@@ -43,7 +43,7 @@ create table if not exists sets (
   set_number int not null default 1,
   reps int not null,
   weight numeric not null default 0,
-  rpe numeric,
+  rest_seconds int,
   created_at timestamptz not null default now()
 );
 

@@ -134,7 +134,7 @@ export default function CalendarView({ session: _session }: { session: Session }
                         <span className="set-num">#{s.set_number}</span>
                         <span>{s.reps} reps</span>
                         <span>{s.weight} kg</span>
-                        {s.rpe != null && <span>RPE {s.rpe}</span>}
+                        {s.rest_seconds != null && <span>พัก {s.rest_seconds}s</span>}
                       </div>
                     ))}
                   </div>

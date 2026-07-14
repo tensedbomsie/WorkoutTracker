@@ -118,13 +118,13 @@ export default function WorkoutLog({ session }: { session: Session }) {
     workoutExerciseId: string,
     reps: number,
     weight: number,
-    rpe: number | null,
+    restSeconds: number | null,
   ) => {
     const item = items.find((i) => i.id === workoutExerciseId)
     const nextNum = (item?.sets?.length ?? 0) + 1
     const { data } = await supabase
       .from('sets')
-      .insert({ workout_exercise_id: workoutExerciseId, set_number: nextNum, reps, weight, rpe })
+      .insert({ workout_exercise_id: workoutExerciseId, set_number: nextNum, reps, weight, rest_seconds: restSeconds })
       .select('*')
       .single()
     setItems((prev) =>
@@ -242,7 +242,7 @@ function SortableExerciseRow({
   onRemove,
 }: {
   item: WorkoutExercise
-  onAddSet: (workoutExerciseId: string, reps: number, weight: number, rpe: number | null) => void
+  onAddSet: (workoutExerciseId: string, reps: number, weight: number, restSeconds: number | null) => void
   onDeleteSet: (workoutExerciseId: string, setId: string) => void
   onRemove: (workoutExerciseId: string) => void
 }) {
@@ -258,10 +258,10 @@ function SortableExerciseRow({
   const lastSet = item.sets?.[item.sets.length - 1]
   const [reps, setReps] = useState(lastSet?.reps ?? 10)
   const [weight, setWeight] = useState(lastSet?.weight ?? 20)
-  const [rpe, setRpe] = useState<number | ''>('')
+  const [restSeconds, setRestSeconds] = useState<number | ''>('')
 
   const confirmSet = () => {
-    onAddSet(item.id, reps, weight, rpe === '' ? null : rpe)
+    onAddSet(item.id, reps, weight, restSeconds === '' ? null : restSeconds)
   }
 
   return (
@@ -284,7 +284,7 @@ function SortableExerciseRow({
               <span className="set-num">#{s.set_number}</span>
               <span>{s.reps} reps</span>
               <span>{s.weight} kg</span>
-              {s.rpe != null && <span>RPE {s.rpe}</span>}
+              {s.rest_seconds != null && <span>พัก {s.rest_seconds}s</span>}
               <button className="set-delete" onClick={() => onDeleteSet(item.id, s.id)}>
                 ×
               </button>
@@ -322,13 +322,13 @@ function SortableExerciseRow({
           </div>
         </div>
         <div className="quick-add-field">
-          <span className="field-label">RPE</span>
+          <span className="field-label">Rest (sec)</span>
           <input
             className="rpe-input"
             type="number"
             placeholder="-"
-            value={rpe}
-            onChange={(e) => setRpe(e.target.value === '' ? '' : Number(e.target.value))}
+            value={restSeconds}
+            onChange={(e) => setRestSeconds(e.target.value === '' ? '' : Number(e.target.value))}
             onKeyDown={(e) => e.key === 'Enter' && confirmSet()}
           />
         </div>

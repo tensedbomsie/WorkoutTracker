@@ -23,7 +23,7 @@ export type WorkoutSet = {
   set_number: number
   reps: number
   weight: number
-  rpe: number | null
+  rest_seconds: number | null
   created_at: string
 }
 
