@@ -8,6 +8,29 @@ const dayKey = (d: Date) => {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
 
+const buildWorkoutExportText = (workout: Workout, items: WorkoutExercise[]) => {
+  const lines: string[] = [
+    `# Workout: ${workout.name}`,
+    new Date(workout.performed_at).toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+    }),
+    '',
+  ]
+  if (workout.notes) lines.push(`โน้ต: ${workout.notes}`, '')
+  for (const item of items) {
+    lines.push(`## ${item.exercise?.name ?? ''}`)
+    for (const s of item.sets ?? []) {
+      const rest = s.rest_seconds != null ? ` | พัก ${s.rest_seconds}s` : ''
+      lines.push(`- #${s.set_number} ${s.reps} reps, ${s.weight} kg${rest}`)
+    }
+    lines.push('')
+  }
+  return lines.join('\n')
+}
+
 export default function CalendarView({ session: _session }: { session: Session }) {
   const [cursor, setCursor] = useState(() => {
     const d = new Date()
@@ -17,6 +40,8 @@ export default function CalendarView({ session: _session }: { session: Session }
   const [workoutDays, setWorkoutDays] = useState<Record<string, Workout>>({})
   const [selected, setSelected] = useState<Workout | null>(null)
   const [selectedItems, setSelectedItems] = useState<WorkoutExercise[]>([])
+  const [exportText, setExportText] = useState<string | null>(null)
+  const [copyStatus, setCopyStatus] = useState<string | null>(null)
 
   useEffect(() => {
     const load = async () => {
@@ -38,6 +63,8 @@ export default function CalendarView({ session: _session }: { session: Session }
 
   const openDay = async (workout: Workout) => {
     setSelected(workout)
+    setExportText(null)
+    setCopyStatus(null)
     const { data } = await supabase
       .from('workout_exercises')
       .select('*, exercise:exercises(*), sets(*)')
@@ -141,7 +168,37 @@ export default function CalendarView({ session: _session }: { session: Session }
                 </div>
               ))
             )}
+            {exportText !== null && (
+              <>
+                <textarea
+                  readOnly
+                  className="workout-notes-input"
+                  style={{ minHeight: 160, fontFamily: 'ui-monospace, Consolas, monospace', fontSize: '0.8rem' }}
+                  value={exportText}
+                  onFocus={(e) => e.target.select()}
+                />
+                {copyStatus && <p className="modal-sub">{copyStatus}</p>}
+              </>
+            )}
             <div className="modal-actions">
+              {selectedItems.length > 0 && (
+                <button
+                  className="btn"
+                  style={{ marginRight: 'auto' }}
+                  onClick={async () => {
+                    const text = buildWorkoutExportText(selected, selectedItems)
+                    setExportText(text)
+                    try {
+                      await navigator.clipboard.writeText(text)
+                      setCopyStatus('คัดลอกแล้ว!')
+                    } catch {
+                      setCopyStatus('คัดลอกอัตโนมัติไม่ได้ กรุณาเลือกข้อความแล้วกด Ctrl+C เอง')
+                    }
+                  }}
+                >
+                  Export
+                </button>
+              )}
               <button className="btn" onClick={() => setSelected(null)}>
                 ปิด
               </button>
