@@ -11,6 +11,7 @@ import ProgressPhotos from './ProgressPhotos'
 import BodyMeasurementPage from './BodyMeasurement'
 import PRTracker from './PRTracker'
 import Statistics from './Statistics'
+import AppSwitcher from './AppSwitcher'
 import './App.css'
 
 type Tab =
@@ -61,6 +62,7 @@ function App() {
         <a className="hub-link" href="https://tensedbomsie.github.io/SatoruHUB/" title="กลับไป Satoru HUB">
           🏠
         </a>
+        <AppSwitcher current="Workout Tracker" />
         <span className="brand">🏋️ Workout Tracker</span>
         <div className="nav-tabs">
           {TABS.map((t) => (
