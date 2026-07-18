@@ -270,6 +270,15 @@ input, select, textarea {
   padding: 0.5rem 0.6rem;
 }
 
+select {
+  background-color: #1a1b23;
+}
+
+select option {
+  background-color: #1a1b23;
+  color: var(--text);
+}
+
 /* ---------- Dashboard ---------- */
 .stat-grid {
   display: grid;
