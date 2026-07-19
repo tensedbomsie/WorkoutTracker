@@ -10,6 +10,43 @@
   --danger: #f87171;
   --gold: #facc15;
   --radius: 14px;
+  --card-blur: 14px;
+  --bg-glow-1: rgba(99, 102, 241, 0.12);
+  --bg-glow-2: rgba(52, 211, 153, 0.1);
+  --modal-bg: #12131a;
+}
+
+:root[data-theme='business'] {
+  --bg: #0f1115;
+  --bg-2: #15181f;
+  --glass: rgba(255, 255, 255, 0.065);
+  --glass-border: rgba(255, 255, 255, 0.13);
+  --text: #f1f5f9;
+  --text-dim: #94a3b8;
+  --accent: #22d3ee;
+  --accent-2: #a78bfa;
+  --danger: #fb7185;
+  --gold: #fbbf24;
+  --bg-glow-1: rgba(167, 139, 250, 0.16);
+  --bg-glow-2: rgba(34, 211, 238, 0.12);
+  --modal-bg: #14171d;
+}
+
+:root[data-theme='warm'] {
+  --bg: #fdf6ec;
+  --bg-2: #f7ecd9;
+  --glass: #ffffff;
+  --glass-border: #f0e4d0;
+  --text: #2b2118;
+  --text-dim: #8a7960;
+  --accent: #f97316;
+  --accent-2: #f59e0b;
+  --danger: #dc2626;
+  --gold: #d97706;
+  --card-blur: 0px;
+  --bg-glow-1: rgba(249, 115, 22, 0.06);
+  --bg-glow-2: rgba(245, 158, 11, 0.05);
+  --modal-bg: #ffffff;
 }
 
 body {
@@ -17,8 +54,8 @@ body {
   font-family: 'Segoe UI', system-ui, sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at 15% 0%, rgba(99, 102, 241, 0.12), transparent 45%),
-    radial-gradient(circle at 85% 20%, rgba(52, 211, 153, 0.1), transparent 45%),
+    radial-gradient(circle at 15% 0%, var(--bg-glow-1), transparent 45%),
+    radial-gradient(circle at 85% 20%, var(--bg-glow-2), transparent 45%),
     var(--bg);
   min-height: 100vh;
 }
@@ -70,14 +107,14 @@ button {
 .glass {
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: var(--card-blur);
+  -webkit-backdrop-filter: var(--card-blur);
 }
 
 .card {
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(14px);
+  backdrop-filter: var(--card-blur);
   border-radius: var(--radius);
   padding: 1.1rem;
 }
@@ -929,7 +966,7 @@ select option {
   left: 0;
   bottom: 0;
   width: 260px;
-  background: #12131a;
+  background: var(--modal-bg);
   border-right: 1px solid var(--glass-border);
   padding: 1rem;
   display: flex;
