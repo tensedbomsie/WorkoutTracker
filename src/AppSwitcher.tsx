@@ -6,6 +6,7 @@ const APPS = [
   { name: 'Workout Tracker', icon: '🏋️', url: 'https://tensedbomsie.github.io/WorkoutTracker/' },
   { name: 'Movie Hub', icon: '🎬', url: 'https://tensedbomsie.github.io/MovieHub/' },
   { name: 'Money Diary', icon: '💰', url: 'https://tensedbomsie.github.io/MoneyDiary/' },
+  { name: 'Tech Dictionary', icon: '📖', url: 'https://tensedbomsie.github.io/TechDictionary/' },
 ]
 
 export default function AppSwitcher({ current }: { current: string }) {
