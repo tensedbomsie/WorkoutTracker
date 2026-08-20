@@ -58,6 +58,7 @@ body {
     radial-gradient(circle at 85% 20%, var(--bg-glow-2), transparent 45%),
     var(--bg);
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 button {
@@ -284,6 +285,14 @@ button {
     flex: 0 0 auto;
     white-space: nowrap;
   }
+  .app-main {
+    padding: 1rem 0.7rem 3rem;
+  }
+  .program-card-actions,
+  .program-header-actions,
+  .modal-actions {
+    flex-wrap: wrap;
+  }
 }
 
 .app-main {
@@ -419,6 +428,7 @@ select option {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 0.6rem;
   margin-bottom: 1rem;
 }
