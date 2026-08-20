@@ -9,6 +9,7 @@ export default function TodaysProgram({ session }: { session: Session }) {
   const [program, setProgram] = useState<WorkoutProgram | null>(null)
   const [day, setDay] = useState<ProgramDay | null>(null)
   const [loading, setLoading] = useState(true)
+  const [alreadyDoneToday, setAlreadyDoneToday] = useState(false)
 
   const [phase, setPhase] = useState<Phase>('idle')
   const [workoutExerciseIds, setWorkoutExerciseIds] = useState<Record<string, string>>({})
@@ -39,6 +40,22 @@ export default function TodaysProgram({ session }: { session: Session }) {
       .maybeSingle()
     if (prog) {
       setProgram(prog as WorkoutProgram)
+
+      const startOfToday = new Date()
+      startOfToday.setHours(0, 0, 0, 0)
+      const { data: todaysWorkout } = await supabase
+        .from('workouts')
+        .select('id')
+        .eq('owner', session.user.id)
+        .not('program_day_id', 'is', null)
+        .gte('performed_at', startOfToday.toISOString())
+        .maybeSingle()
+      if (todaysWorkout) {
+        setAlreadyDoneToday(true)
+        setLoading(false)
+        return
+      }
+
       const { data: d } = await supabase
         .from('program_days')
         .select('*, program_exercises(*, exercise:exercises(*))')
@@ -204,6 +221,15 @@ export default function TodaysProgram({ session }: { session: Session }) {
   }
 
   if (loading) return <p className="empty-state">กำลังโหลด...</p>
+
+  if (alreadyDoneToday) {
+    return (
+      <div className="card today-program-done">
+        <h2>✅ วันนี้เล่นไปแล้ว!</h2>
+        <p>เยี่ยมมาก พรุ่งนี้กลับมาต่อวันที่ {program?.current_day_number ?? 1} ได้เลย</p>
+      </div>
+    )
+  }
 
   if (!program || !day) {
     return (
