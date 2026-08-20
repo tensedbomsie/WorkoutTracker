@@ -1026,3 +1026,486 @@ select option {
 .sidebar-item-icon {
   font-size: 1.2rem;
 }
+
+/* Program Builder + Today's Program (v2) */
+.program-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.program-card {
+  padding: 16px;
+}
+
+.program-active {
+  border-color: var(--accent);
+}
+
+.program-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.program-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.chip-active {
+  background: var(--accent);
+  color: #08130f;
+}
+
+.program-goal {
+  color: var(--text-dim);
+  margin: 6px 0;
+}
+
+.program-meta {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin: 0 0 10px;
+}
+
+.program-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.program-editor {
+  margin-top: 16px;
+  padding: 20px;
+}
+
+.program-repeats-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  color: var(--text-dim);
+}
+
+.program-days-list {
+  display: grid;
+  gap: 14px;
+  margin: 16px 0;
+}
+
+.program-day-card {
+  padding: 14px;
+}
+
+.program-day-name-input {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.program-exercise-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--glass-border);
+  flex-wrap: wrap;
+}
+
+/* Today's Program guided flow */
+.today-program-preview {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.today-program-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.today-preview-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--glass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.today-start-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.1rem;
+  margin-top: 8px;
+}
+
+.today-active-screen,
+.today-rest-screen,
+.today-program-done {
+  padding: 32px 24px;
+  text-align: center;
+  max-width: 480px;
+  margin: 24px auto;
+}
+
+.today-active-progress {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.today-active-name {
+  margin: 0 0 16px;
+  font-size: 1.6rem;
+}
+
+.today-active-thumb {
+  max-width: 100%;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+
+.today-active-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.today-input-block {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.today-input-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.today-input-stepper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.today-input-stepper button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--text);
+  font-size: 1.4rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.today-input-stepper button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.today-input-stepper input {
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 2.6rem;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.today-input-stepper input:focus {
+  outline: none;
+}
+
+/* hide native number spinners */
+.today-input-stepper input::-webkit-outer-spin-button,
+.today-input-stepper input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.today-input-stepper input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.today-complete-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.1rem;
+}
+
+.today-rest-label {
+  display: block;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+}
+
+.today-rest-timer {
+  display: block;
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 12px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.today-target-hint,
+.today-confirm-hint {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+/* AI Program Generator */
+.program-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.program-generator {
+  margin: 16px 0;
+  padding: 18px;
+}
+
+.program-generator-reply {
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.program-generator-preview {
+  margin: 12px 0;
+}
+
+.program-generator-reasoning {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin: 6px 0 14px;
+}
+
+.program-generator-ex-row {
+  padding: 6px 0;
+}
+
+.program-generator-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.program-generator-input-row input {
+  flex: 1;
+}
+
+/* Live AI coaching during rest */
+.coach-tip {
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  text-align: left;
+  margin: 12px 0;
+}
+
+.coach-tip-loading {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.coach-ask-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.coach-ask-input {
+  flex: 1;
+}
+
+/* BMI + body trend analysis */
+.bmi-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.bmi-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bmi-label-text {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+}
+
+.body-analysis-card {
+  margin-bottom: 16px;
+}
+
+.body-analysis-text {
+  margin-top: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* Progress photo comparison */
+.photo-compare-panel {
+  margin-bottom: 16px;
+}
+
+.photo-compare-hint {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.photo-compare-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.photo-compare-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.photo-compare-slot img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.photo-compare-empty {
+  width: 100%;
+  height: 140px;
+  border: 1px dashed var(--glass-border);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.photo-compare-panel input {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.photo-card {
+  position: relative;
+}
+
+.photo-card-picked {
+  outline: 2px solid var(--accent);
+}
+
+.photo-picked-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--accent);
+  color: #06120c;
+  font-weight: 700;
+}
+
+/* Overall coach chat */
+.coach-chat-panel {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  min-height: 60vh;
+}
+
+.coach-chat-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.coach-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.chip-btn {
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.coach-chat-log {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+  overflow-y: auto;
+}
+
+.coach-chat-msg {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  max-width: 80%;
+}
+
+.coach-chat-msg-user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #06120c;
+  font-weight: 500;
+}
+
+.coach-chat-msg-model {
+  align-self: flex-start;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.coach-chat-loading {
+  color: var(--text-dim);
+  font-style: italic;
+}

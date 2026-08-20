@@ -12,10 +12,16 @@ import BodyMeasurementPage from './BodyMeasurement'
 import PRTracker from './PRTracker'
 import Statistics from './Statistics'
 import AppSwitcher from './AppSwitcher'
+import TodaysProgram from './TodaysProgram'
+import ProgramBuilder from './ProgramBuilder'
+import OverallCoach from './OverallCoach'
 import './App.css'
 
 type Tab =
   | 'dashboard'
+  | 'today'
+  | 'programs'
+  | 'coach'
   | 'log'
   | 'exercises'
   | 'volume'
@@ -27,6 +33,9 @@ type Tab =
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
+  { id: 'today', label: '🎯 วันนี้' },
+  { id: 'programs', label: 'โปรแกรม' },
+  { id: 'coach', label: '🧑‍⚕️ โค้ช' },
   { id: 'log', label: 'Log Workout' },
   { id: 'exercises', label: 'Exercises' },
   { id: 'volume', label: 'Volume' },
@@ -77,6 +86,9 @@ function App() {
       </nav>
       <main className="app-main fade-in" key={tab}>
         {tab === 'dashboard' && <Dashboard session={session} onGoLog={() => setTab('log')} />}
+        {tab === 'today' && <TodaysProgram session={session} />}
+        {tab === 'programs' && <ProgramBuilder session={session} />}
+        {tab === 'coach' && <OverallCoach />}
         {tab === 'log' && <WorkoutLog session={session} />}
         {tab === 'exercises' && <ExerciseLibrary session={session} />}
         {tab === 'volume' && <MuscleVolume session={session} />}

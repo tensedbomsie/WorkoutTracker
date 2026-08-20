@@ -15,6 +15,7 @@ const METRICS: { key: keyof BodyMeasurement; label: string; unit: string }[] = [
 
 const emptyForm = () => ({
   weight: '',
+  height: '',
   body_fat: '',
   waist: '',
   chest: '',
@@ -22,10 +23,26 @@ const emptyForm = () => ({
   thigh: '',
 })
 
+function computeBmi(weightKg: number | null, heightCm: number | null): number | null {
+  if (!weightKg || !heightCm) return null
+  const meters = heightCm / 100
+  return weightKg / (meters * meters)
+}
+
+function bmiLabel(bmi: number): string {
+  if (bmi < 18.5) return 'ต่ำกว่าเกณฑ์'
+  if (bmi < 23) return 'ปกติ'
+  if (bmi < 25) return 'ท้วม'
+  if (bmi < 30) return 'อ้วนระดับ 1'
+  return 'อ้วนระดับ 2'
+}
+
 export default function BodyMeasurementPage({ session }: { session: Session }) {
   const [entries, setEntries] = useState<BodyMeasurement[]>([])
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState(emptyForm())
+  const [analysis, setAnalysis] = useState<string | null>(null)
+  const [analyzing, setAnalyzing] = useState(false)
 
   const load = async () => {
     setLoading(true)
@@ -33,7 +50,12 @@ export default function BodyMeasurementPage({ session }: { session: Session }) {
       .from('body_measurements')
       .select('*')
       .order('measured_at', { ascending: false })
-    setEntries((data as BodyMeasurement[]) ?? [])
+    const rows = (data as BodyMeasurement[]) ?? []
+    setEntries(rows)
+    // Pre-fill height from the most recent entry that had one — height
+    // barely changes for adults, no reason to force retyping it every time.
+    const lastHeight = rows.find((r) => r.height != null)?.height
+    if (lastHeight) setForm((f) => ({ ...f, height: String(lastHeight) }))
     setLoading(false)
   }
 
@@ -47,13 +69,14 @@ export default function BodyMeasurementPage({ session }: { session: Session }) {
     await supabase.from('body_measurements').insert({
       owner: session.user.id,
       weight: toNum(form.weight),
+      height: toNum(form.height),
       body_fat: toNum(form.body_fat),
       waist: toNum(form.waist),
       chest: toNum(form.chest),
       arm: toNum(form.arm),
       thigh: toNum(form.thigh),
     })
-    setForm(emptyForm())
+    setForm((f) => ({ ...emptyForm(), height: f.height }))
     load()
   }
 
@@ -63,7 +86,25 @@ export default function BodyMeasurementPage({ session }: { session: Session }) {
     setEntries((e) => e.filter((x) => x.id !== id))
   }
 
+  const analyzeTrend = async () => {
+    setAnalyzing(true)
+    setAnalysis(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-body-trend', {
+        body: { entries: chronological },
+      })
+      if (error) throw error
+      setAnalysis(data.analysis || 'วิเคราะห์ไม่ได้ ลองใหม่อีกครั้ง')
+    } catch {
+      setAnalysis('เกิดข้อผิดพลาด ลองใหม่อีกครั้ง')
+    } finally {
+      setAnalyzing(false)
+    }
+  }
+
   const chronological = [...entries].reverse()
+  const latest = entries[0]
+  const latestBmi = latest ? computeBmi(latest.weight, latest.height) : null
 
   return (
     <div>
@@ -71,6 +112,13 @@ export default function BodyMeasurementPage({ session }: { session: Session }) {
 
       <form className="card exercise-form" onSubmit={addEntry}>
         <div className="form-grid">
+          <input
+            type="number"
+            step="0.1"
+            placeholder="Height (cm)"
+            value={form.height}
+            onChange={(e) => setForm({ ...form, height: e.target.value })}
+          />
           {METRICS.map((m) => (
             <input
               key={m.key}
@@ -86,6 +134,25 @@ export default function BodyMeasurementPage({ session }: { session: Session }) {
           + บันทึกวันนี้
         </button>
       </form>
+
+      {latestBmi != null && (
+        <div className="card bmi-card">
+          <span className="bmi-value">{latestBmi.toFixed(1)}</span>
+          <div>
+            <div className="bmi-label-text">BMI ล่าสุด</div>
+            <div className="chip">{bmiLabel(latestBmi)}</div>
+          </div>
+        </div>
+      )}
+
+      {entries.length >= 2 && (
+        <div className="card body-analysis-card">
+          <button className="btn btn-primary" onClick={analyzeTrend} disabled={analyzing}>
+            {analyzing ? 'กำลังวิเคราะห์...' : '🤖 ให้ AI วิเคราะห์เทรนด์'}
+          </button>
+          {analysis && <p className="body-analysis-text">{analysis}</p>}
+        </div>
+      )}
 
       {loading ? (
         <p className="empty-state">กำลังโหลด...</p>

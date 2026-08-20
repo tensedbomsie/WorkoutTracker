@@ -12,6 +12,49 @@ export default function ProgressPhotos({ session }: { session: Session }) {
   const [angle, setAngle] = useState<PhotoAngle>('Front')
   const [filter, setFilter] = useState<PhotoAngle | 'All'>('All')
 
+  const [compareMode, setCompareMode] = useState(false)
+  const [beforePhoto, setBeforePhoto] = useState<ProgressPhoto | null>(null)
+  const [afterPhoto, setAfterPhoto] = useState<ProgressPhoto | null>(null)
+  const [goal, setGoal] = useState('')
+  const [analysis, setAnalysis] = useState<string | null>(null)
+  const [analyzing, setAnalyzing] = useState(false)
+
+  const pickForCompare = (p: ProgressPhoto) => {
+    if (beforePhoto?.id === p.id) return setBeforePhoto(null)
+    if (afterPhoto?.id === p.id) return setAfterPhoto(null)
+    if (!beforePhoto) return setBeforePhoto(p)
+    if (!afterPhoto) return setAfterPhoto(p)
+    // both slots full — restart selection with this photo as the new "before"
+    setBeforePhoto(p)
+    setAfterPhoto(null)
+  }
+
+  const runComparison = async () => {
+    if (!beforePhoto || !afterPhoto) return
+    setAnalyzing(true)
+    setAnalysis(null)
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-progress-photos', {
+        body: { before_url: beforePhoto.image_url, after_url: afterPhoto.image_url, goal: goal || undefined },
+      })
+      if (error) throw error
+      setAnalysis(data.analysis || 'วิเคราะห์ไม่ได้ ลองใหม่อีกครั้ง')
+      if (data.analysis) {
+        await supabase.from('progress_photo_analyses').insert({
+          owner: session.user.id,
+          before_photo_id: beforePhoto.id,
+          after_photo_id: afterPhoto.id,
+          goal: goal || null,
+          analysis: data.analysis,
+        })
+      }
+    } catch {
+      setAnalysis('เกิดข้อผิดพลาด ลองใหม่อีกครั้ง')
+    } finally {
+      setAnalyzing(false)
+    }
+  }
+
   const load = async () => {
     setLoading(true)
     const { data } = await supabase
@@ -67,11 +110,55 @@ export default function ProgressPhotos({ session }: { session: Session }) {
     <div>
       <div className="page-header">
         <h1>Progress Photos</h1>
-        <label className="btn btn-primary upload-label">
-          {uploading ? 'กำลังอัปโหลด...' : '+ อัปโหลดรูป'}
-          <input type="file" accept="image/*" hidden onChange={handleUpload} disabled={uploading} />
-        </label>
+        <div className="program-header-actions">
+          <button
+            className={`btn${compareMode ? ' btn-primary' : ''}`}
+            onClick={() => {
+              setCompareMode((v) => !v)
+              setBeforePhoto(null)
+              setAfterPhoto(null)
+              setAnalysis(null)
+            }}
+          >
+            🤖 เปรียบเทียบรูป
+          </button>
+          <label className="btn btn-primary upload-label">
+            {uploading ? 'กำลังอัปโหลด...' : '+ อัปโหลดรูป'}
+            <input type="file" accept="image/*" hidden onChange={handleUpload} disabled={uploading} />
+          </label>
+        </div>
       </div>
+
+      {compareMode && (
+        <div className="card photo-compare-panel">
+          <p className="photo-compare-hint">
+            คลิกรูปด้านล่าง: รูปแรกที่กด = "ก่อน", รูปที่สอง = "ตอนนี้"
+          </p>
+          <div className="photo-compare-slots">
+            <div className="photo-compare-slot">
+              <span className="today-input-label">ก่อน</span>
+              {beforePhoto ? <img src={beforePhoto.image_url} alt="before" /> : <div className="photo-compare-empty">ยังไม่เลือก</div>}
+            </div>
+            <div className="photo-compare-slot">
+              <span className="today-input-label">ตอนนี้</span>
+              {afterPhoto ? <img src={afterPhoto.image_url} alt="after" /> : <div className="photo-compare-empty">ยังไม่เลือก</div>}
+            </div>
+          </div>
+          <input
+            value={goal}
+            onChange={(e) => setGoal(e.target.value)}
+            placeholder="เป้าหมาย (ไม่บังคับ) เช่น อยากกลับไปให้เหมือนก่อนหน้า"
+          />
+          <button
+            className="btn btn-primary today-start-btn"
+            onClick={runComparison}
+            disabled={!beforePhoto || !afterPhoto || analyzing}
+          >
+            {analyzing ? 'กำลังวิเคราะห์...' : '🤖 วิเคราะห์การเปลี่ยนแปลง'}
+          </button>
+          {analysis && <p className="body-analysis-text">{analysis}</p>}
+        </div>
+      )}
 
       <div className="filter-bar">
         <select value={angle} onChange={(e) => setAngle(e.target.value as PhotoAngle)}>
@@ -102,17 +189,28 @@ export default function ProgressPhotos({ session }: { session: Session }) {
           <div key={day}>
             <h2 className="section-title">{day}</h2>
             <div className="photo-grid">
-              {dayPhotos.map((p) => (
-                <div key={p.id} className="photo-card card">
-                  <img src={p.image_url} alt={p.angle} />
-                  <div className="photo-card-footer">
-                    <span className="chip">{p.angle}</span>
-                    <button className="set-delete" onClick={() => deletePhoto(p.id)}>
-                      ×
-                    </button>
+              {dayPhotos.map((p) => {
+                const pickedLabel = beforePhoto?.id === p.id ? 'ก่อน' : afterPhoto?.id === p.id ? 'ตอนนี้' : null
+                return (
+                  <div
+                    key={p.id}
+                    className={`photo-card card${pickedLabel ? ' photo-card-picked' : ''}`}
+                    onClick={compareMode ? () => pickForCompare(p) : undefined}
+                    style={compareMode ? { cursor: 'pointer' } : undefined}
+                  >
+                    <img src={p.image_url} alt={p.angle} />
+                    {pickedLabel && <span className="chip photo-picked-badge">{pickedLabel}</span>}
+                    <div className="photo-card-footer">
+                      <span className="chip">{p.angle}</span>
+                      {!compareMode && (
+                        <button className="set-delete" onClick={() => deletePhoto(p.id)}>
+                          ×
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         ))

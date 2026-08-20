@@ -64,11 +64,57 @@ export type BodyMeasurement = {
   owner: string
   measured_at: string
   weight: number | null
+  height: number | null
   body_fat: number | null
   waist: number | null
   chest: number | null
   arm: number | null
   thigh: number | null
+  created_at: string
+}
+
+export type WorkoutProgram = {
+  id: string
+  owner: string
+  name: string
+  goal: string | null
+  total_days: number
+  current_day_number: number
+  repeats: boolean
+  status: 'active' | 'completed' | 'paused'
+  ai_generated: boolean
+  created_at: string
+}
+
+export type ProgramDay = {
+  id: string
+  program_id: string
+  day_number: number
+  name: string
+  created_at: string
+  program_exercises?: ProgramExercise[]
+}
+
+export type ProgramExercise = {
+  id: string
+  program_day_id: string
+  exercise_id: string
+  position: number
+  target_sets: number
+  target_reps: number
+  target_weight: number | null
+  target_rest_seconds: number
+  created_at: string
+  exercise?: Exercise
+}
+
+export type ProgressPhotoAnalysis = {
+  id: string
+  owner: string
+  before_photo_id: string | null
+  after_photo_id: string | null
+  goal: string | null
+  analysis: string
   created_at: string
 }
 
