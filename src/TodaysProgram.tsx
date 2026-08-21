@@ -24,12 +24,22 @@ export default function TodaysProgram({ session }: { session: Session }) {
   const [coachLoading, setCoachLoading] = useState(false)
   const [coachQuestion, setCoachQuestion] = useState('')
 
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const [justSaved, setJustSaved] = useState<string | null>(null)
+
   useEffect(() => {
     void load()
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
     }
   }, [session.user.id])
+
+  useEffect(() => {
+    if (!justSaved) return
+    const t = setTimeout(() => setJustSaved(null), 4000)
+    return () => clearTimeout(t)
+  }, [justSaved])
 
   const load = async () => {
     setLoading(true)
@@ -127,10 +137,11 @@ export default function TodaysProgram({ session }: { session: Session }) {
     if (!day || !day.program_exercises) return
     const ex = day.program_exercises[exIdx]
     if (setNum < ex.target_sets) {
+      // Same exercise, next set — keep reps/weight as whatever was just
+      // confirmed (not the original plan target), so a weight typed once
+      // carries forward instead of resetting every set.
       const nextSet = setNum + 1
       setSetNum(nextSet)
-      setReps(ex.target_reps)
-      setWeight(ex.target_weight ?? 0)
       setPhase('active')
     } else if (exIdx < day.program_exercises.length - 1) {
       const nextIdx = exIdx + 1
@@ -155,13 +166,25 @@ export default function TodaysProgram({ session }: { session: Session }) {
     if (!currentExercise) return
     const weId = workoutExerciseIds[currentExercise.id]
     if (!weId) return
-    await supabase.from('sets').insert({
+    if (!Number.isFinite(reps) || reps < 0 || !Number.isFinite(weight) || weight < 0) return
+
+    setSaving(true)
+    setSaveError(null)
+    const { error } = await supabase.from('sets').insert({
       workout_exercise_id: weId,
       set_number: setNum,
       reps,
       weight,
       rest_seconds: currentExercise.target_rest_seconds,
     })
+    setSaving(false)
+    if (error) {
+      setSaveError('บันทึกไม่สำเร็จ เช็คเน็ตแล้วลองอีกครั้ง')
+      return
+    }
+
+    setJustSaved(`✓ เซต ${setNum} บันทึกแล้ว — ${reps} ครั้ง${weight ? ` @ ${weight}kg` : ''}`)
+
     const isLastSetOfLastExercise =
       setNum >= currentExercise.target_sets && exIdx >= (day?.program_exercises?.length ?? 1) - 1
     if (isLastSetOfLastExercise) {
@@ -276,6 +299,7 @@ export default function TodaysProgram({ session }: { session: Session }) {
   if (phase === 'resting') {
     return (
       <div className="card today-rest-screen">
+        {justSaved && <p className="today-saved-flash">{justSaved}</p>}
         <span className="today-rest-label">พัก</span>
         <span className="today-rest-timer">{restLeft}s</span>
         <p>เซตถัดไป: {currentExercise?.exercise?.name} — เซต {setNum < (currentExercise?.target_sets ?? 1) ? setNum + 1 : setNum}</p>
@@ -322,27 +346,57 @@ export default function TodaysProgram({ session }: { session: Session }) {
           ท่าที่ {exIdx + 1}/{day.program_exercises?.length} · เซต {setNum}/{currentExercise?.target_sets}
         </div>
         <h2 className="today-active-name">{currentExercise?.exercise?.name}</h2>
+        <p className="today-target-hint">
+          เป้าหมาย: {currentExercise?.target_reps} ครั้ง{currentExercise?.target_weight ? ` @ ${currentExercise.target_weight}kg` : ''}
+        </p>
         <p className="today-confirm-hint">ทำได้จริงกี่ครั้ง/กี่กก. — ใส่ตามที่ทำได้จริงเลย ไม่ต้องตรงกับเป้าก็ได้</p>
         <div className="today-active-inputs">
           <div className="today-input-block">
             <span className="today-input-label">จำนวนครั้งจริง</span>
             <div className="today-input-stepper">
-              <button onClick={() => setReps((r) => Math.max(0, r - 1))}>−</button>
-              <input type="number" value={reps} onChange={(e) => setReps(Number(e.target.value))} autoFocus />
-              <button onClick={() => setReps((r) => r + 1)}>+</button>
+              <button onClick={() => setReps((r) => Math.max(0, (Number.isFinite(r) ? r : 0) - 1))}>−</button>
+              <input
+                type="number"
+                min={0}
+                value={Number.isFinite(reps) ? reps : ''}
+                onChange={(e) => {
+                  const v = e.target.value === '' ? NaN : Number(e.target.value)
+                  setReps(v)
+                }}
+                autoFocus
+              />
+              <button onClick={() => setReps((r) => (Number.isFinite(r) ? r : 0) + 1)}>+</button>
             </div>
           </div>
           <div className="today-input-block">
             <span className="today-input-label">น้ำหนักจริง (kg)</span>
             <div className="today-input-stepper">
-              <button onClick={() => setWeight((w) => Math.max(0, w - 2.5))}>−</button>
-              <input type="number" step="0.5" value={weight} onChange={(e) => setWeight(Number(e.target.value))} />
-              <button onClick={() => setWeight((w) => w + 2.5)}>+</button>
+              <button onClick={() => setWeight((w) => Math.max(0, (Number.isFinite(w) ? w : 0) - 2.5))}>−</button>
+              <input
+                type="number"
+                step="0.5"
+                min={0}
+                value={Number.isFinite(weight) ? weight : ''}
+                onChange={(e) => {
+                  const v = e.target.value === '' ? NaN : Number(e.target.value)
+                  setWeight(v)
+                }}
+              />
+              <button onClick={() => setWeight((w) => (Number.isFinite(w) ? w : 0) + 2.5)}>+</button>
             </div>
           </div>
         </div>
-        <button className="btn btn-primary today-complete-btn" onClick={completeSet}>
-          ✓ ยืนยันจำนวนจริง
+        {saveError && (
+          <p className="today-save-error">
+            {saveError} <button className="btn" onClick={completeSet}>ลองอีกครั้ง</button>
+          </p>
+        )}
+        <button
+          className="btn btn-primary today-complete-btn"
+          onClick={completeSet}
+          disabled={saving || !Number.isFinite(reps) || reps < 0 || !Number.isFinite(weight) || weight < 0}
+        >
+          {saving ? 'กำลังบันทึก...' : '✓ ยืนยันจำนวนจริง'}
         </button>
       </div>
     )
@@ -361,9 +415,19 @@ export default function TodaysProgram({ session }: { session: Session }) {
       <p className="today-target-hint">
         เป้าหมาย: {currentExercise?.target_reps} ครั้ง{currentExercise?.target_weight ? ` @ ${currentExercise.target_weight}kg` : ''}
       </p>
-      <button className="btn btn-primary today-complete-btn" onClick={finishSetPhysically}>
-        ✓ เล่นเซตนี้เสร็จแล้ว
-      </button>
+      {saveError && (
+        <p className="today-save-error">
+          {saveError} <button className="btn" onClick={completeSet}>ลองอีกครั้ง</button>
+        </p>
+      )}
+      <div className="today-active-actions">
+        <button className="btn btn-primary today-complete-btn" onClick={finishSetPhysically} disabled={saving}>
+          ✓ เล่นเซตนี้เสร็จแล้ว
+        </button>
+        <button className="btn today-asplanned-btn" onClick={completeSet} disabled={saving}>
+          {saving ? 'กำลังบันทึก...' : '✓ ตามเป้า (ไม่ต้องกรอก)'}
+        </button>
+      </div>
     </div>
   )
 }

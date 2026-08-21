@@ -156,7 +156,7 @@ button {
 .login-form button {
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   border: none;
-  color: #06120c;
+  color: #000;
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.15s ease, opacity 0.15s ease;
@@ -322,7 +322,7 @@ button {
 .btn-primary {
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   border: none;
-  color: #06120c;
+  color: #000;
   font-weight: 700;
 }
 
@@ -1314,6 +1314,39 @@ select option {
   color: var(--text-dim);
   font-size: 0.95rem;
   margin-bottom: 20px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.today-active-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.today-asplanned-btn {
+  width: 100%;
+  padding: 12px;
+}
+
+.today-save-error {
+  color: var(--danger);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.today-saved-flash {
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 4px;
 }
 
 /* AI Program Generator */
