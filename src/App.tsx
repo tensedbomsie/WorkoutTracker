@@ -59,7 +59,23 @@ function App() {
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
     })
-    return () => listener.subscription.unsubscribe()
+
+    // When embedded in the Satoru HUB overlay, the Hub hands off its own
+    // (same Supabase project) session so this app doesn't ask to log in again.
+    const onMessage = (e: MessageEvent) => {
+      if (e.data?.source === 'satoru-hub' && e.data?.type === 'session' && e.data.session) {
+        supabase.auth.setSession({
+          access_token: e.data.session.access_token,
+          refresh_token: e.data.session.refresh_token,
+        })
+      }
+    }
+    window.addEventListener('message', onMessage)
+
+    return () => {
+      listener.subscription.unsubscribe()
+      window.removeEventListener('message', onMessage)
+    }
   }, [])
 
   if (!checked) return null
